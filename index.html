@@ -12,24 +12,124 @@
     <title>Projeto MVP</title>
 </head>
 
+
 <body class="principal">
  
     <header>
         <div class="title">
-            <h2>Árvore Genealógica</h2>
+            <h2 id="titulo-arvore">Árvore Genealógica</h2>
         </div>
     </header>
 
+
+    <div id="div-membro-comum" class="container-02">
+          <div class="row">
+            <div class="col-2">
+              <div class="card text-white bg-primary mb-3">
+                <div class="card-header text-center">Para inclusão ou alteração do Pai</div>
+              </div>
+
+            </div>
+
+            <div class="col-2">
+              <div class="card text-white bg-info mb-3">
+                <div class="card-header text-center">Para inclusão ou alteração da Mãe</div>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <div class="card text-white bg-warning mb-3">
+                <div class="card-header text-center">Para inclusão ou alteração de filhos</div>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <button type="button" onclick="retornarMembrosBase()" class="btn btn-dark">Retornar Membros Base</button>
+            </div>
+          </div>
+
+          <div id="idform">
+            <form  id="id_pai" class="row">
+              <div class="col-3">
+                <input class="form-control largura-input"  id="newInput" placeholder="Digite o nome do pai">
+              </div>
+
+              <div class="col-1">
+                <button type="button" onclick="salvar()" class="btn btn-primary mb-2">Adicionar</button>
+              </div>
+
+              <div class="col-1">
+                <button type="button" onclick="salvar()" class="btn btn-dark mb-2">Cancelar</button>
+              </div>
+
+
+            </form>        
+
+            <form  id="id_mae" class="row">
+              <div class="col-3">
+                <input class="form-control largura-input"  id="newInput" placeholder="Digite Nome da mãe">
+              </div>
+
+              <div class="col-1">
+                <button type="button" onclick="salvar()" class="btn btn-info mb-2">Adicionar</button>
+              </div>
+
+              <div class="col-1">
+                <button type="button" onclick="salvar()" class="btn btn-dark mb-2">Cancelar</button>
+              </div>
+
+            </form>        
+
+            <form id="id_filho" class="row">
+
+              <div class="col-3">
+                <input class="form-control largura-input"  id="newInput" placeholder="Digite o nome do filho">
+              </div>
+
+              <div class="col-1">
+                <button type="button" onclick="salvar()" class="btn btn-warning mb-2">Adicionar</button>
+              </div>
+
+              <div class="col-1">
+                <button type="button" onclick="salvar()" class="btn btn-dark mb-2">Cancelar</button>
+              </div>
+
+            </form>        
+
+
+          </div>
+
+          <table id="table-arvore" class="table-scroll small-first-col">
+            <tbody>
+               <td>
+
+                  <table id="table-geracao">
+                    <tbody>
+
+                    </tbody>
+                  </table>
+
+
+               </td>
+
+            </tbody>
+          </table>
+
+    </div>
+
+
     <div class="container">
 
-        <form class="row">
+        <div id="div-membro-base">
+
+          <form class="row">
             <div class="col-7">
               <input class="form-control largura-input"  id="newInput" placeholder="Nome do membro base">
             </div>
             <div class="col-1">
-              <button type="button" onclick="newItem()" class="btn btn-primary mb-1">Adicionar</button>
+              <button type="button" onclick="newItem()" class="btn btn-primary mb-1"><span class="bi-plus-square-fill"></span>&nbsp;Adicionar</button>
             </div>
-       </form>        
+          </form>        
 
         <div class="row">
           <div class="col-9">
@@ -41,16 +141,19 @@
                   <th scope="col"></th>
                 </tr>
               </thead>
+
               <tbody>
 
-
               </tbody>
+
             </table>
           </div>
         </div>
-      </div>
 
 
+     </div>
+    </div>
+    
 
     <script src="scripts.js"></script>
 </body>
