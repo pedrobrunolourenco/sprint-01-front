@@ -1,6 +1,9 @@
 
 let id_ = 0;
 let nivel_ = 0;
+let id_base_ = 0;
+let nivel_atual = 0;
+let id_origem = 0;
 
 const getList = async () => {
     $('#div-membro-base').show();
@@ -24,7 +27,7 @@ const getList = async () => {
   
 
   const getListMembroComum = async (item) => {
-    id_base = item;
+    id_base_ = item;
     $('#div-membro-base').hide();
     $('#idform').hide();
     $('#div-membro-comum').show();
@@ -103,36 +106,38 @@ const getList = async () => {
     let btmae01   = '<button type="button" class="btn btn-info btn-sm"'
     let btkid01 = '<button type="button" class="btn btn-warning btn-sm"'
     let btfecha = '</button>';
-    for (let i = 0; i < data.membros.length; i++) {
+    for (let i = 0; i <= data.membros.length; i++) {
       let nivel = data.membros[i].nivel;
       geracao ++;
+      var linha = "";
+      linha =  '<tr>';
+      pnGeracao = g1 + g2 + geracao+'a. Geração' +g3 + g4;
+      linha += '<td>' + pnGeracao + '</td>';
       for (j = i; j < data.membros.length && data.membros[j].nivel == nivel; j++) {
-         pnGeracao = g1 + g2 + geracao+'a. Geração' +g3 + g4;
          let id = data.membros[j].id;
-         var linha =  '<tr>';
-             linha += '<td>' + pnGeracao + '</td>';
-             linha += '<td>' + btpai01 + 'onclick="add_pai(' + id + ',' + nivel + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
-             linha += '<td>' + btmae01 + 'onclick="add_mae(' + id + ',' + nivel + ')">' + data.membros[j].nome_mae +  btfecha + '</td>';
-             linha += '<td>' + btkid01 + 'onclick="add_filho(' + id + ',' + nivel + ')">' + data.membros[j].nome + btfecha + '</td>';
-             linha += '</tr>'
-         $('#table-geracao').append(linha);              
+         linha += '<td>' + btpai01 + 'onclick="add_pai(' + id + ',' + nivel + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
+         linha += '<td>' + btmae01 + 'onclick="add_mae(' + id + ',' + nivel + ')">' + data.membros[j].nome_mae +  btfecha + '</td>';
+         linha += '<td>' + btkid01 + 'onclick="add_filho(' + id + ',' + nivel + ')">' + data.membros[j].nome + btfecha + '</td>';
      };
-     i=j;
+     linha += '</tr>'
+     $('#table-geracao').append(linha);              
+     i=j-1;
     }
   }
 
   const add_pai = (id, nivel) => {
-    id_ =  id;
+    id_origem =  id;
     nivel_ = nivel;
-    
+
     $("#idform").show();
     $("#id_pai").show();
     $("#id_mae").hide();
     $("#id_filho").hide();
+
   }
   
   const add_mae = (id, nivel) => {
-    id_ =  id;
+    id_origem =  id;
     nivel_ = nivel;
     $("#idform").show();
     $("#id_pai").hide();
@@ -141,20 +146,56 @@ const getList = async () => {
   }
 
   const add_filho = (id, nivel) => {
-    id_ =  id;
+    id_origem =  id;
     nivel_ = nivel;
+
     $("#idform").show();
     $("#id_pai").hide();
     $("#id_mae").hide();
     $("#id_filho").show();
   }
 
-  const salvar = () => {
-    // atençao com id_ e nivel_
-    // grava novo registro
-    // altera campos de id_ retornando o novo id gravado
+  const cancelar = () => {
+    getListMembroComum(id_base_);
+  }
+
+  const salvarPai = () => {
+    nivel_atual = nivel_ - 1;
+    let inputNomePai = document.getElementById("newInputPai").value;
+    postItemComum( 'http://127.0.0.1:5000/membro_comum_pai', id_origem, inputNomePai,nivel_atual);
     $("#idform").hide();
   }
+
+  const salvarMae = () => {
+    nivel_atual = nivel_ - 1;
+    let inputNomeMae = document.getElementById("newInputMae").value;
+    postItemComum( 'http://127.0.0.1:5000/membro_comum_mae',id_origem, inputNomeMae,nivel_atual);
+    $("#idform").hide();
+  }
+
+
+  const postItemComum = async (url, id_origem, inputNome, nivel) => {
+    const formData = new FormData();
+    formData.append('id_base', id_base_);
+    formData.append('nivel', nivel);
+    formData.append('nome', inputNome);
+    formData.append('pai', 0);
+    formData.append('mae', 0);
+    formData.append('id_origem', id_origem);
+
+    fetch(url, {
+      method: 'post',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      cancelar(id_base_);      
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    })
+   }
+
 
   
   const deleteItem = (item) => {
