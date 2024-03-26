@@ -48,7 +48,6 @@ const getList = async () => {
   const newItem = async () => {
     let inputNome = document.getElementById("newInput").value;
     postItem(inputNome)
-    getList();
     let nome_base = $('#newInput').val()
     $('#titulo-arvore').val(nome_base);
     $('#newInput').val('');
@@ -71,6 +70,11 @@ const getList = async () => {
       body: formData
     })
     .then((response) => response.json())
+    .then((data) => {
+      $('#table-geracao').find('tbody').detach();
+      $('#table-geracao').append($('<tbody>'));        
+      getList();
+    })
     .catch((error) => {
       console.error('Error:', error);
     })
