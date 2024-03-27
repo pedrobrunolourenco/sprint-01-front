@@ -22,7 +22,7 @@
     </header>
 
 
-    <div id="div-membro-comum" class="container-02">
+    <div id="div-membro-comum" class="container">
           <div class="row">
             <div class="col-2">
               <div class="card text-white bg-primary mb-3">
@@ -75,7 +75,7 @@
               </div>
 
               <div class="col-1">
-                <button type="button" onclick="salvarFilho()" class="btn btn-dark mb-2">Cancelar</button>
+                <button type="button" onclick="cancelar()" class="btn btn-dark mb-2">Cancelar</button>
               </div>
 
             </form>        
@@ -87,30 +87,20 @@
               </div>
 
               <div class="col-1">
-                <button type="button" onclick="salvar()" class="btn btn-warning mb-2">Adicionar</button>
+                <button type="button" onclick="salvarFilho(pai_ou_mae)" class="btn btn-warning mb-2">Adicionar</button>
               </div>
 
               <div class="col-1">
-                <button type="button" onclick="salvar()" class="btn btn-dark mb-2">Cancelar</button>
+                <button type="button" onclick="cancelar()" class="btn btn-dark mb-2">Cancelar</button>
               </div>
 
             </form>        
 
-
           </div>
 
-          <table id="table-arvore" class="table-scroll small-first-col">
+
+          <table id="table-geracao" class="table-scroll">
             <tbody>
-               <td>
-
-                  <table id="table-geracao">
-                    <tbody>
-
-                    </tbody>
-                  </table>
-
-
-               </td>
 
             </tbody>
           </table>

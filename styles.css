@@ -62,13 +62,6 @@ header {
   background-color: black;
 }
 
-.container-02{
-  padding: 1rem;
-  margin: 1rem;
-  overflow: scroll;
-  height: 100%;
-  width: 100%;
-}
 
 table {
   border-collapse: collapse;
@@ -88,6 +81,12 @@ table thead {
   position: sticky;
   inset-block-start: 0;
   background-color: #ddd;
-}
+} 
 
+.table-scroll {
+  display: block;
+  width: 1100px;
+  height: 500px;
+  overflow: auto;
+}
 
