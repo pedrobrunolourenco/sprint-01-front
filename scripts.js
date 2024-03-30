@@ -7,6 +7,28 @@ let id_origem = 0;
 let origem = "";
 e_pai_ou_mae = "";
 
+function showToastrOk(msg) {
+  toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "5000"
+  };
+
+  toastr.success(msg, "Sucesso");
+}
+
+function showToastrErro(msg) {
+  toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "5000"
+  };
+  toastr.error(msg, "Erro");
+}
+
+
 const getList = () => {
     $('#div-membro-base').show();
     $('#div-membro-comum').hide();
@@ -25,8 +47,8 @@ const getList = () => {
     });
   }
 
-  getList()
-  
+  getList();
+
 
   const getListMembroComum = async (item) => {
     id_base_ = item;
@@ -55,9 +77,9 @@ const getList = () => {
     let g2 = '<div class="card-header text-center">'
     let g3 = '</div>';
     let g4 = '</div>';
-    let btpai01   = '<button type="button" class="btn btn-primary btn-sm"'
-    let btmae01   = '<button type="button" class="btn btn-info btn-sm"'
-    let btkid01 = '<button type="button" class="btn btn-warning btn-sm"'
+    let btpai01   = '<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ModalPai"'
+    let btmae01   = '<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#ModalMae"'
+    let btkid01   = '<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#ModalFilho"'
     let btfecha = '</button>';
     if(data.membros != null)
     {
@@ -84,7 +106,6 @@ const getList = () => {
     }
   }
 
-  
   
   const newItem = async () => {
     let inputNome = document.getElementById("newInput").value;
@@ -136,9 +157,9 @@ const getList = () => {
 
 
   const add_pai = async (id, nivel) => {
+    $("#newInputPai").hide('');
     id_origem =  id;
     nivel_ = nivel;
-   
     $("#idform").show();
     $("#id_pai").show();
     $("#id_mae").hide();
@@ -147,6 +168,7 @@ const getList = () => {
   }
   
   const add_mae = async (id, nivel) => {
+    $("#newInputMae").hide('');
     id_origem =  id;
     nivel_ = nivel;
     $("#idform").show();
@@ -156,6 +178,7 @@ const getList = () => {
   }
 
   const add_filho = async (id, nivel, id_pai, id_mae) => {
+    $("#newInputMae").hide('');
     id_origem =  id;
     nivel_ = nivel;
 
@@ -166,8 +189,13 @@ const getList = () => {
   }
 
   const cancelar = async () => {
+    $("#ModalPai").modal("hide");
     await getListMembroComum(id_base_);
   }
+
+  $('.modal').on('hidden.bs.modal', function() {
+    $(this).find('input:text').val('');
+  });
 
   const salvarPai = async () => {
     nivel_atual = nivel_ - 1;
