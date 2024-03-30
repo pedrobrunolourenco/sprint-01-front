@@ -49,53 +49,6 @@
             </div>
           </div>
 
-          <div id="idform">
-            <form  id="id_pai" class="row">
-              <div class="col-3">
-                <input class="form-control largura-input"  id="newInputPai" placeholder="Digite o nome do pai">
-              </div>
-
-              <div class="col-1">
-                <button type="button" onclick="salvarPai()" class="btn btn-primary mb-2">Adicionar</button>
-              </div>
-
-              <div class="col-1">
-                <button type="button" onclick="cancelar()" class="btn btn-dark mb-2">Cancelar</button>
-              </div>
-            </form>        
-
-            <form  id="id_mae" class="row">
-              <div class="col-3">
-                <input class="form-control largura-input"  id="newInputMae" placeholder="Digite Nome da mãe">
-              </div>
-
-              <div class="col-1">
-                <button type="button" onclick="salvarMae()" class="btn btn-info mb-2">Adicionar</button>
-              </div>
-
-              <div class="col-1">
-                <button type="button" onclick="cancelar()" class="btn btn-dark mb-2">Cancelar</button>
-              </div>
-
-            </form>        
-
-            <form id="id_filho" class="row">
-
-              <div class="col-3">
-                <input class="form-control largura-input"  id="newInputFilho" placeholder="Digite o nome do filho">
-              </div>
-
-              <div class="col-1">
-                <button type="button" onclick="salvarFilho(pai_ou_mae)" class="btn btn-warning mb-2">Adicionar</button>
-              </div>
-
-              <div class="col-1">
-                <button type="button" onclick="cancelar()" class="btn btn-dark mb-2">Cancelar</button>
-              </div>
-
-            </form>        
-
-          </div>
 
 
           <table id="table-geracao" class="table-scroll">
@@ -116,7 +69,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <input class="form-control largura-input"  id="newInputPai" placeholder="Digite o nome do pai">
+                <input class="form-control largura-input" autocomplete="off"  id="newInputPai" placeholder="Digite o nome do pai">
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
@@ -138,11 +91,11 @@
                 </button>
               </div>
               <div class="modal-body">
-                <input class="form-control largura-input"  id="newInputMae" placeholder="Digite o nome da Mãe">
+                <input class="form-control largura-input" autocomplete="off"  id="newInputMae" placeholder="Digite o nome da Mãe">
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" onclick="salvarPai()" class="btn btn-primary mb-2">Adicionar</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
+                <button type="button" onclick="salvarMae()" class="btn btn-primary mb-2">Adicionar</button>
               </div>
             </div>
           </div>
@@ -160,11 +113,11 @@
                 </button>
               </div>
               <div class="modal-body">
-                <input class="form-control largura-input"  id="newInputFilho" placeholder="Digite o nome do Filho">
+                <input class="form-control largura-input" autocomplete="off" id="newInputFilho" placeholder="Digite o nome do Filho">
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" onclick="salvarPai()" class="btn btn-primary mb-2">Adicionar</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
+                <button type="button" onclick="salvarFilho()" class="btn btn-primary mb-2">Adicionar</button>
               </div>
             </div>
           </div>
@@ -180,7 +133,7 @@
 
           <form class="row">
             <div class="col-6">
-              <input class="form-control largura-input"  id="newInput" placeholder="Nome do membro base">
+              <input class="form-control largura-input" autocomplete="off"  id="newInput" placeholder="Nome do membro base">
             </div>
             <div class="col-2">
               <button type="button" onclick="newItem()" class="btn btn-primary mb-1"><span class="bi-plus-square-fill"></span>&nbsp;Adicionar</button>

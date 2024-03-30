@@ -134,11 +134,17 @@ const getList = () => {
     .then((response) => response.json())
     .then((data) => {
       $('#table-geracao').find('tbody').detach();
-      $('#table-geracao').append($('<tbody>'));        
+      $('#table-geracao').append($('<tbody>'));  
+      if(data.sucesso)      
+         showToastrOk(data.mensagem);
+
+      if(!data.sucesso)      
+         showToastrErro(data.mensagem);
+
       getList();
     })
     .catch((error) => {
-      console.error('Error:', error);
+      showToastrErro(error.mensagem);
     })
    }
 
@@ -157,39 +163,24 @@ const getList = () => {
 
 
   const add_pai = async (id, nivel) => {
-    $("#newInputPai").hide('');
     id_origem =  id;
     nivel_ = nivel;
-    $("#idform").show();
-    $("#id_pai").show();
-    $("#id_mae").hide();
-    $("#id_filho").hide();
-
   }
   
   const add_mae = async (id, nivel) => {
-    $("#newInputMae").hide('');
     id_origem =  id;
     nivel_ = nivel;
-    $("#idform").show();
-    $("#id_pai").hide();
-    $("#id_mae").show();
-    $("#id_filho").hide();
   }
 
   const add_filho = async (id, nivel, id_pai, id_mae) => {
-    $("#newInputMae").hide('');
     id_origem =  id;
     nivel_ = nivel;
-
-    $("#idform").show();
-    $("#id_pai").hide();
-    $("#id_mae").hide();
-    $("#id_filho").show();
   }
 
   const cancelar = async () => {
     $("#ModalPai").modal("hide");
+    $("#ModalMae").modal("hide");
+    $("#ModalFilho").modal("hide");
     await getListMembroComum(id_base_);
   }
 
@@ -201,21 +192,18 @@ const getList = () => {
     nivel_atual = nivel_ - 1;
     let inputNomePai = document.getElementById("newInputPai").value;
     await  postItemComum( 'http://127.0.0.1:5000/membro_comum_pai', id_origem, inputNomePai,nivel_atual);
-    $("#idform").hide();
   }
 
   const salvarMae = async () => {
     nivel_atual = nivel_ - 1;
     let inputNomeMae = document.getElementById("newInputMae").value;
     await postItemComum( 'http://127.0.0.1:5000/membro_comum_mae',id_origem, inputNomeMae,nivel_atual);
-    $("#idform").hide();
   }
 
   const salvarFilho = async () => {
     nivel_atual = nivel_ + 1;
     let inputNomeMae = document.getElementById("newInputFilho").value;
     await  postItemComum( 'http://127.0.0.1:5000/membro_comum_filho',id_origem, inputNomeMae,nivel_atual);
-    $("#idform").hide();
   }
 
 
@@ -237,9 +225,11 @@ const getList = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      cancelar(id_base_);      
+      showToastrOk("Membro cadastrado com sucesso");
+      cancelar();      
     })
     .catch((error) => {
+      showToastrErro("Erro ao cadastrar um novo membro");
       console.error('Error:', error);
     })
    }
