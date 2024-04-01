@@ -148,13 +148,11 @@ const getList = () => {
 
   const insertListMembroComum = async (data) => {
     let geracao = 0;
-    let g1 = '<div class="card text-white bg-black mb-3">'
-    let g2 = '<div class="card-header text-center">'
-    let g3 = '</div>';
-    let g4 = '</div>';
-    let btpai01   = '<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ModalPai"'
-    let btmae01   = '<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#ModalMae"'
-    let btkid01   = '<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#ModalFilho"'
+    let g1 = '<div class="btn btn-warning btn-sm largura-100 cursor-none">'
+    let g2 = '</div>';
+    let btpai01   = '<button type="button" class="btn btn-primary btn-sm largura-100" data-toggle="modal" data-target="#ModalPai"'
+    let btmae01   = '<button type="button" class="btn btn-success btn-sm largura-100" data-toggle="modal" data-target="#ModalMae"'
+    let btkid01   = '<button type="button" class="btn btn-secondary btn-sm largura-100  data-toggle="modal" data-target="#ModalFilho"'
     let btfecha = '</button>';
     if(data.membros != null)
     {
@@ -166,7 +164,7 @@ const getList = () => {
         {
            for (j = i; j < data.membros.length && data.membros[j].nivel == nivel; j++) {
             linha =  '<tr>';
-            pnGeracao = g1 + g2 + geracao+'a. Geração' +g3 + g4;
+            pnGeracao = g1 + geracao+'a. Geração' +g2;
             linha += '<td>' + pnGeracao + '</td>';
             let id = data.membros[j].id;
             linha += '<td>' + btpai01 + 'onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
