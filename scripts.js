@@ -2,10 +2,11 @@
 let id_ = 0;
 let nivel_ = 0;
 let id_base_ = 0;
+let pai_ = 0;
+let mae_ =  0;
 let nivel_atual = 0;
 let id_origem = 0;
-let origem = "";
-e_pai_ou_mae = "";
+
 
 function showToastrOk(msg) {
   toastr.options = {
@@ -71,6 +72,80 @@ const getList = () => {
       });
   }
 
+  const getPaiPorId = async (id) => {
+    id_ = id;
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
+    fetch(url, {
+      method: 'get'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if(data.membro)
+      {
+         document.getElementById("newInputPai").value = data.membro.nome;
+         document.getElementById("btnaddpai").style.display = 'none';
+         document.getElementById("btnaltpai").style.display = 'block';
+      }
+      else
+      {
+        document.getElementById("newInputPai").value = '';
+        document.getElementById("btnaddpai").style.display = 'block';
+        document.getElementById("btnaltpai").style.display = 'none';
+     }
+
+    })
+  }
+
+
+  const getMaePorId = async (id) => {
+    id_ = id;
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
+    fetch(url, {
+      method: 'get'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if(data.membro)
+      {
+         document.getElementById("newInputMae").value = data.membro.nome;
+         document.getElementById("btnaddmae").style.display = 'none';
+         document.getElementById("btnaltmae").style.display = 'block';
+      }
+      else
+      {
+        document.getElementById("newInputMae").value = '';
+        document.getElementById("btnaddmae").style.display = 'block';
+        document.getElementById("btnaltmae").style.display = 'none';
+     }
+
+    })
+  }
+
+  const getKidPorId = async (id) => {
+    id_ = id;
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
+    fetch(url, {
+      method: 'get'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if(data.membro)
+      {
+         document.getElementById("newInputFilho").value = data.membro.nome;
+         document.getElementById("btnaddfilho").style.display = 'none';
+         document.getElementById("btnaltfilho").style.display = 'block';
+      }
+      else
+      {
+        document.getElementById("newInputFilho").value = '';
+        document.getElementById("btnaddfilho").style.display = 'block';
+        document.getElementById("btnaltfilho").style.display = 'none';
+     }
+
+    })
+  }
+
+
   const insertListMembroComum = async (data) => {
     let geracao = 0;
     let g1 = '<div class="card text-white bg-black mb-3">'
@@ -94,9 +169,9 @@ const getList = () => {
             pnGeracao = g1 + g2 + geracao+'a. Geração' +g3 + g4;
             linha += '<td>' + pnGeracao + '</td>';
             let id = data.membros[j].id;
-            linha += '<td>' + btpai01 + 'onclick="add_pai(' + id + ',' + nivel + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
-            linha += '<td>' + btmae01 + 'onclick="add_mae(' + id + ',' + nivel + ')">' + data.membros[j].nome_mae +  btfecha + '</td>';
-            linha += '<td>' + btkid01 + 'onclick="add_filho(' + id + ',' + nivel + ')">' + data.membros[j].nome + btfecha + '</td>';
+            linha += '<td>' + btpai01 + 'onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
+            linha += '<td>' + btmae01 + 'onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
+            linha += '<td>' + btkid01 + 'onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].id + ')">' + data.membros[j].nome + btfecha + '</td>';
             linha += '</tr>'
             $('#table-geracao').append(linha);              
           };
@@ -143,9 +218,6 @@ const getList = () => {
 
       getList();
     })
-    .catch((error) => {
-      showToastrErro(error.mensagem);
-    })
    }
 
   const insertListMembroBase = async (id, nome) => {
@@ -162,19 +234,26 @@ const getList = () => {
   }
 
 
-  const add_pai = async (id, nivel) => {
+  const add_pai = async (id, nivel, pai) => {
     id_origem =  id;
     nivel_ = nivel;
+    pai_ = pai;
+    id_ = id;
+    getPaiPorId(pai);
   }
   
-  const add_mae = async (id, nivel) => {
+  const add_mae = async (id, nivel, mae) => {
     id_origem =  id;
-    nivel_ = nivel;
+    nivel_ = nivel; 
+    mae_ = mae;
+    id_ = id;
+    getMaePorId(mae);
   }
 
-  const add_filho = async (id, nivel, id_pai, id_mae) => {
+  const add_kid = async (id, nivel, filho) => {
     id_origem =  id;
     nivel_ = nivel;
+    getKidPorId(filho);
   }
 
   const cancelar = async () => {
@@ -188,24 +267,34 @@ const getList = () => {
     $(this).find('input:text').val('');
   });
 
-  const salvarPai = async () => {
+
+  const adicionaPai = async () => {
     nivel_atual = nivel_ - 1;
     let inputNomePai = document.getElementById("newInputPai").value;
-    await  postItemComum( 'http://127.0.0.1:5000/membro_comum_pai', id_origem, inputNomePai,nivel_atual);
+    await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_pai', id_origem, inputNomePai,nivel_atual);
   }
 
-  const salvarMae = async () => {
+  const alteraPai = async () => {
+    let inputNomePai = document.getElementById("newInputPai").value;
+    await  putItemComumPai( 'http://127.0.0.1:5000/altera_membro_comum_pai', pai_, id_origem, inputNomePai);
+  }
+
+  const alteraMae = async () => {
+    let inputNomeMae = document.getElementById("newInputMae").value;
+    await  putItemComumMae( 'http://127.0.0.1:5000/altera_membro_comum_mae', mae_, id_origem, inputNomeMae);
+  }
+
+  const adicionaMae = async () => {
     nivel_atual = nivel_ - 1;
     let inputNomeMae = document.getElementById("newInputMae").value;
-    await postItemComum( 'http://127.0.0.1:5000/membro_comum_mae',id_origem, inputNomeMae,nivel_atual);
+    await postItemComum( 'http://127.0.0.1:5000/add_membro_comum_mae',id_origem, inputNomeMae,nivel_atual);
   }
 
-  const salvarFilho = async () => {
+  const adicionaFilho = async () => {
     nivel_atual = nivel_ + 1;
-    let inputNomeMae = document.getElementById("newInputFilho").value;
-    await  postItemComum( 'http://127.0.0.1:5000/membro_comum_filho',id_origem, inputNomeMae,nivel_atual);
+    let inputNomeFilho = document.getElementById("newInputFilho").value;
+    await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_filho',id_origem, inputNomeFilho,nivel_atual);
   }
-
 
 
   const postItemComum = async (url, id_origem, inputNome, nivel) => {
@@ -216,8 +305,6 @@ const getList = () => {
     formData.append('pai', 0);
     formData.append('mae', 0);
     formData.append('id_origem', id_origem);
-
-
 
     await  fetch(url, {
       method: 'post',
@@ -234,7 +321,47 @@ const getList = () => {
     })
    }
 
+   const putItemComumPai = async (url, id_pai, id_origem, inputNome) => {
+    const formData = new FormData();
+    formData.append('id_pai', id_pai);
+    formData.append('id_filho', id_origem);
+    formData.append('nome', inputNome);
 
+    await  fetch(url, {
+      method: 'put',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      showToastrOk("Membro alterado com sucesso");
+      cancelar();      
+    })
+    .catch((error) => {
+      showToastrErro("Erro ao alterar membro");
+      console.error('Error:', error);
+    })
+   }
+
+   const putItemComumMae = async (url, id_mae, id_origem, inputNome) => {
+    const formData = new FormData();
+    formData.append('id_mae', id_mae);
+    formData.append('id_filho', id_origem);
+    formData.append('nome', inputNome);
+
+    await  fetch(url, {
+      method: 'put',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      showToastrOk("Membro alterado com sucesso");
+      cancelar();      
+    })
+    .catch((error) => {
+      showToastrErro("Erro ao alterar membro");
+      console.error('Error:', error);
+    })
+   }
   
   const deleteItem = async (item) => {
     let url = await 'http://127.0.0.1:5000/produto?nome=' + item;

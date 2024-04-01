@@ -58,7 +58,8 @@
           </table>
 
 
-        <!-- Modal para pai -->
+        
+          <!-- Modal para pai -->
         <div class="modal fade" id="ModalPai" tabindex="-1" role="dialog" aria-labelledby="paiModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -73,7 +74,8 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
-                <button type="button" onclick="salvarPai()" class="btn btn-primary mb-2">Adicionar</button>
+                <button type="button" id="btnaddpai" onclick="adicionaPai()" class="btn btn-primary mb-2" >Adicionar</button>
+                <button type="button" id="btnaltpai" onclick="alteraPai()" class="btn btn-primary mb-2" >Alterar</button>
               </div>
             </div>
           </div>
@@ -95,7 +97,8 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
-                <button type="button" onclick="salvarMae()" class="btn btn-primary mb-2">Adicionar</button>
+                <button type="button" id="btnaddmae" onclick="adicionaMae()" class="btn btn-primary mb-2" >Adicionar</button>
+                <button type="button" id="btnaltmae" onclick="alteraMae()" class="btn btn-primary mb-2" >Alterar</button>
               </div>
             </div>
           </div>
@@ -114,10 +117,25 @@
               </div>
               <div class="modal-body">
                 <input class="form-control largura-input" autocomplete="off" id="newInputFilho" placeholder="Digite o nome do Filho">
+
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="rbpai">
+                  <label class="form-check-label" for="rbpai">
+                     Pai
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="rbmae" checked>
+                  <label class="form-check-label" for="rbmae">
+                    Mãe
+                  </label>
+                </div>                 
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
-                <button type="button" onclick="salvarFilho()" class="btn btn-primary mb-2">Adicionar</button>
+                <button type="button" id="btnaddfilho" onclick="adicionaFilho()" class="btn btn-primary mb-2" >Adicionar</button>
+                <button type="button" id="btnaltfilho" onclick="alteraFilho()" class="btn btn-primary mb-2" >Alterar</button>
               </div>
             </div>
           </div>
@@ -162,14 +180,6 @@
 
      </div>
     </div>
-
-    
-
-    
-    
-    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
