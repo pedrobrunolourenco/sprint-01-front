@@ -98,8 +98,7 @@ const getList = () => {
 
 
   const getMaePorId = async (id) => {
-    id_ = id;
-    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id + "&id_base=" + id_base_;
     fetch(url, {
       method: 'get'
     })
@@ -121,29 +120,95 @@ const getList = () => {
     })
   }
 
-  const getKidPorId = async (id) => {
-    id_ = id;
-    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
-    fetch(url, {
-      method: 'get'
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if(data.membro)
-      {
-         document.getElementById("newInputFilho").value = data.membro.nome;
-         document.getElementById("btnaddfilho").style.display = 'none';
-         document.getElementById("btnaltfilho").style.display = 'block';
-      }
-      else
-      {
-        document.getElementById("newInputFilho").value = '';
-        document.getElementById("btnaddfilho").style.display = 'block';
-        document.getElementById("btnaltfilho").style.display = 'none';
-     }
+  const getKidPorId = async (id_origem, pai, mae) => {
 
-    })
+    pai_ = 0;
+    mae_ = 0;
+    
+    var membroPai = await getMembroPai(id_origem);
+    var membroMae = await getMembroMae(id_origem);
+
+    let ePai = false;
+    let eMae = false;
+    if(membroPai)
+    {
+      if(membroPai.id > 0)
+      {
+         ePai = true;
+      }
+    }
+
+    if( ePai == false)
+    {
+      if(membroMae)
+      {
+        if(membroMae.id > 0)
+        {
+           eMae = true;
+        }
+      }
+    }
+
+    document.getElementById("newInputFilho").value = "";
+    document.getElementById("btnaltfilho").style.display = 'none';
+    document.getElementById("btnaddfilho").style.display = 'block';
+
+    if(ePai == false && eMae == false)
+    {
+      document.getElementById("selecionaPaiMae").style.display = 'block';
+
+      let idButtonKid = "id_kid_" + id_origem;
+
+      var textoButton = document.querySelector('#'+idButtonKid).textContent;
+
+      document.querySelector('#cklabelpai').textContent = 'Selecione se ' + textoButton + ' for o PAI do filho que será adicionado';
+      document.querySelector('#cklabelmae').textContent = 'Selecione se ' + textoButton + ' for a MÃE do filho que será adicionado';
+    }
+
+    if(ePai || eMae)
+    {
+      document.getElementById("selecionaPaiMae").style.display = 'none';
+      if( ePai )
+      {
+        pai_ = id_origem;
+        mae_ = 0;
+      }
+
+      if( eMae )
+      {
+        pai_ = 0;
+        mae_ = id_origem;
+      }
+    }
+
   }
+
+  const getMembroPai = async (id) => {
+    let url =  'http://127.0.0.1:5000/membro_pai?id=' + id;
+    const response = await fetch(url, {
+      method: 'get'
+    });
+   const data = await response.json();
+    if (data.membro) {
+        return data.membro;
+    } else {
+        return null; 
+    }
+  }
+
+  const getMembroMae = async (id) => {
+    let url =  'http://127.0.0.1:5000/membro_mae?id=' + id;
+    const response = await fetch(url, {
+      method: 'get'
+    });
+   const data = await response.json();
+    if (data.membro) {
+        return data.membro;
+    } else {
+        return null; 
+    }
+  }
+
 
 
   const insertListMembroComum = async (data) => {
@@ -152,7 +217,7 @@ const getList = () => {
     let g2 = '</div>';
     let btpai01   = '<button type="button" class="btn btn-primary btn-sm largura-100" data-toggle="modal" data-target="#ModalPai"'
     let btmae01   = '<button type="button" class="btn btn-success btn-sm largura-100" data-toggle="modal" data-target="#ModalMae"'
-    let btkid01   = '<button type="button" class="btn btn-secondary btn-sm largura-100  data-toggle="modal" data-target="#ModalFilho"'
+    let btkid01   = '<button type="button" class="btn btn-secondary btn-sm largura-100" data-toggle="modal" data-target="#ModalFilho"'
     let btfecha = '</button>';
     if(data.membros != null)
     {
@@ -166,10 +231,9 @@ const getList = () => {
             linha =  '<tr>';
             pnGeracao = g1 + geracao+'a. Geração' +g2;
             linha += '<td>' + pnGeracao + '</td>';
-            let id = data.membros[j].id;
-            linha += '<td>' + btpai01 + 'onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
-            linha += '<td>' + btmae01 + 'onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
-            linha += '<td>' + btkid01 + 'onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].id + ')">' + data.membros[j].nome + btfecha + '</td>';
+            linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
+            linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
+            linha += '<td>' + btkid01 + 'id="id_kid_' + data.membros[j].id  + '" onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ',' + data.membros[j].mae + ')">' + data.membros[j].nome     + btfecha + '</td>';
             linha += '</tr>'
             $('#table-geracao').append(linha);              
           };
@@ -248,10 +312,11 @@ const getList = () => {
     getMaePorId(mae);
   }
 
-  const add_kid = async (id, nivel, filho) => {
+  const add_kid = async (id, nivel, pai, mae) => {
     id_origem =  id;
     nivel_ = nivel;
-    getKidPorId(filho);
+    filho = id;
+    getKidPorId(filho, pai, mae);
   }
 
   const cancelar = async () => {
@@ -269,39 +334,109 @@ const getList = () => {
   const adicionaPai = async () => {
     nivel_atual = nivel_ - 1;
     let inputNomePai = document.getElementById("newInputPai").value;
-    await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_pai', id_origem, inputNomePai,nivel_atual);
+    if(inputNomePai != '' && inputNomePai != null)
+    {
+      await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_pai', id_origem, inputNomePai,nivel_atual, 0, 0);
+    }
+    else
+    {
+      showToastrErro('Necessário informar o nome do pai');
+    }
   }
 
   const alteraPai = async () => {
     let inputNomePai = document.getElementById("newInputPai").value;
-    await  putItemComumPai( 'http://127.0.0.1:5000/altera_membro_comum_pai', pai_, id_origem, inputNomePai);
+    if(inputNomePai != '' && inputNomePai != null)
+    {
+      await  putItemComumPai( 'http://127.0.0.1:5000/altera_membro_comum_pai', pai_, id_origem, inputNomePai);
+    }
+    else
+    {
+      showToastrErro('Necessário informar o nome do pai');
+    }
   }
 
-  const alteraMae = async () => {
-    let inputNomeMae = document.getElementById("newInputMae").value;
-    await  putItemComumMae( 'http://127.0.0.1:5000/altera_membro_comum_mae', mae_, id_origem, inputNomeMae);
-  }
 
   const adicionaMae = async () => {
     nivel_atual = nivel_ - 1;
     let inputNomeMae = document.getElementById("newInputMae").value;
-    await postItemComum( 'http://127.0.0.1:5000/add_membro_comum_mae',id_origem, inputNomeMae,nivel_atual);
+    if(inputNomeMae != '' && inputNomeMae != null)
+    {
+      await postItemComum( 'http://127.0.0.1:5000/add_membro_comum_mae',id_origem, inputNomeMae,nivel_atual,0,0);
+    }
+    else
+    {
+      showToastrErro('Necessário informar o nome da Mãe');
+    }
+  }
+
+  const alteraMae = async () => {
+    let inputNomeMae = document.getElementById("newInputMae").value;
+    if(inputNomeMae != '' && inputNomeMae != null)
+    {
+      await  putItemComumMae( 'http://127.0.0.1:5000/altera_membro_comum_mae', mae_, id_origem, inputNomeMae);
+    }
+    else
+    {
+      showToastrErro('Necessário informar o nome da Mãe');
+    }
   }
 
   const adicionaFilho = async () => {
     nivel_atual = nivel_ + 1;
     let inputNomeFilho = document.getElementById("newInputFilho").value;
-    await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_filho',id_origem, inputNomeFilho,nivel_atual);
+    if(inputNomeFilho != '' && inputNomeFilho != null)
+    {
+      if(pai_ == 0 && mae_ == 0)
+      {
+          // buscar o checked
+          let rdb = obterRadioMarcado();
+          if( rdb == "Pai")
+          {
+            pai_ = id_origem;
+            mae_ = 0;
+            await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_filho',id_origem, inputNomeFilho, nivel_atual, pai_, 0 );
+          }
+
+          if( rdb == "Mae")
+          {
+            pai_ = 0;
+            mae_ = id_origem;
+            await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_filho',id_origem, inputNomeFilho, nivel_atual, 0, mae_ );
+          }
+
+          if( rdb == null)
+          {
+            showToastrErro('Necessário informar se é Pai ou Mãe');
+          }
+      }
+    }
+    else
+    {
+      showToastrErro('Necessário informar o nome do Filho');
+    }
   }
 
+  function obterRadioMarcado() {
+    var radioPai = document.getElementById('rbpai');
+    if (radioPai.checked) {
+        return 'Pai';
+    }
+    var radioMae = document.getElementById('rbmae');
+    if (radioMae.checked) {
+        return 'Mae';
+    }
+    return null;
+  }
 
-  const postItemComum = async (url, id_origem, inputNome, nivel) => {
+  const postItemComum = async (url, id_origem, inputNome, nivel, pai, mae) => {
+
     const formData = new FormData();
     formData.append('id_base', id_base_);
     formData.append('nivel', nivel);
     formData.append('nome', inputNome);
-    formData.append('pai', 0);
-    formData.append('mae', 0);
+    formData.append('pai', pai);
+    formData.append('mae', mae);
     formData.append('id_origem', id_origem);
 
     await  fetch(url, {
