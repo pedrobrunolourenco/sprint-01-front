@@ -227,6 +227,11 @@ const getList = () => {
     let btmae01   = '<button type="button" class="btn btn-success btn-sm largura-100" data-toggle="modal" data-target="#ModalMae"'
     let btkid01   = '<button type="button" class="btn btn-secondary btn-sm largura-100" data-toggle="modal" data-target="#ModalFilho"'
     let btfecha = '</button>';
+
+    let bt1 = '<button type="button" class="btn btn-secondary btn-sm"><span class="bi bi-vector-pen"></span></button>';
+    let bt2 = '<button type="button" class="btn btn-danger btn-sm"><span class="bi bi-trash-fill"></span></button>';
+  
+
     if(data.membros != null)
     {
       for (let i = 0; i < data.membros.length; i++) {
@@ -239,15 +244,24 @@ const getList = () => {
             linha =  '<tr>';
             if( data.membros[j].id_base == 0 ) {
               pnGeracao = g0 + geracao+'a. Geração' +g2;
+              linha += '<td>' + pnGeracao + '</td>';
+              linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
+              linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
+              linha += '<td>' + btkid01 + 'id="id_kid_' + data.membros[j].id  + '" onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ',' + data.membros[j].mae + ')">' + data.membros[j].nome     + btfecha + '</td>';
+              linha += '<td></td>'
+              linha += '<td></td>'
             }
             else
             {
               pnGeracao = g1 + geracao+'a. Geração' +g2;
+              linha += '<td>' + pnGeracao + '</td>';
+              linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
+              linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
+              linha += '<td>' + btkid01 + 'id="id_kid_' + data.membros[j].id  + '" onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ',' + data.membros[j].mae + ')">' + data.membros[j].nome     + btfecha + '</td>';
+              linha += '<td class="text-center">'+ bt1 + '</td>';
+              linha += '<td class="text-center">'+ bt2 + '</td>';
+      
             }
-            linha += '<td>' + pnGeracao + '</td>';
-            linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
-            linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
-            linha += '<td>' + btkid01 + 'id="id_kid_' + data.membros[j].id  + '" onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ',' + data.membros[j].mae + ')">' + data.membros[j].nome     + btfecha + '</td>';
             linha += '</tr>'
             $('#table-geracao').append(linha);              
           };
