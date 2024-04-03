@@ -50,7 +50,6 @@ const getList = () => {
 
   getList();
 
-
   const getListMembroComum = async (item) => {
     id_base_ = item;
     $('#div-membro-base').hide();
@@ -82,7 +81,7 @@ const getList = () => {
     .then((data) => {
       if(data.membro)
       {
-         document.getElementById("newInputPai").value = data.membro.nome;
+         document.getElementById("newInputPai").value = data.membro[0].nome;
          document.getElementById("btnaddpai").style.display = 'none';
          document.getElementById("btnaltpai").style.display = 'block';
       }
@@ -98,7 +97,7 @@ const getList = () => {
 
 
   const getMaePorId = async (id) => {
-    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id + "&id_base=" + id_base_;
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
     fetch(url, {
       method: 'get'
     })
@@ -106,7 +105,7 @@ const getList = () => {
     .then((data) => {
       if(data.membro)
       {
-         document.getElementById("newInputMae").value = data.membro.nome;
+         document.getElementById("newInputMae").value = data.membro[0].nome;
          document.getElementById("btnaddmae").style.display = 'none';
          document.getElementById("btnaltmae").style.display = 'block';
       }
@@ -121,20 +120,22 @@ const getList = () => {
   }
 
   const getKidPorId = async (id_origem, pai, mae) => {
+    var membroPai = await getMembroPai(id_origem);
+    var membroMae = await getMembroMae(id_origem);
+    let ePai = false;
+    let eMae = false;
 
     pai_ = 0;
     mae_ = 0;
-    
-    var membroPai = await getMembroPai(id_origem);
-    var membroMae = await getMembroMae(id_origem);
 
-    let ePai = false;
-    let eMae = false;
+    document.getElementById("rbpai").checked = false;
+    document.getElementById("rbmae").checked = false;
+
     if(membroPai)
     {
       if(membroPai.id > 0)
       {
-         ePai = true;
+          ePai = true;
       }
     }
 
@@ -144,14 +145,10 @@ const getList = () => {
       {
         if(membroMae.id > 0)
         {
-           eMae = true;
+            eMae = true;
         }
       }
     }
-
-    document.getElementById("newInputFilho").value = "";
-    document.getElementById("btnaltfilho").style.display = 'none';
-    document.getElementById("btnaddfilho").style.display = 'block';
 
     if(ePai == false && eMae == false)
     {
@@ -180,7 +177,6 @@ const getList = () => {
         mae_ = id_origem;
       }
     }
-
   }
 
   const getMembroPai = async (id) => {
@@ -190,7 +186,7 @@ const getList = () => {
     });
    const data = await response.json();
     if (data.membro) {
-        return data.membro;
+        return data.membro[0];
     } else {
         return null; 
     }
@@ -203,16 +199,28 @@ const getList = () => {
     });
    const data = await response.json();
     if (data.membro) {
-        return data.membro;
+        return data.membro[0];
     } else {
         return null; 
     }
   }
 
-
+  const getMembroFilho = async (id) => {
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id
+    const response = await fetch(url, {
+      method: 'get'
+    });
+   const data = await response.json();
+    if (data.membro) {
+        return data.membro[0];
+    } else {
+        return null; 
+    }
+  }
 
   const insertListMembroComum = async (data) => {
     let geracao = 0;
+    let g0 = '<div class="btn btn-danger btn-sm largura-100 cursor-none">'
     let g1 = '<div class="btn btn-warning btn-sm largura-100 cursor-none">'
     let g2 = '</div>';
     let btpai01   = '<button type="button" class="btn btn-primary btn-sm largura-100" data-toggle="modal" data-target="#ModalPai"'
@@ -229,7 +237,13 @@ const getList = () => {
         {
            for (j = i; j < data.membros.length && data.membros[j].nivel == nivel; j++) {
             linha =  '<tr>';
-            pnGeracao = g1 + geracao+'a. Geração' +g2;
+            if( data.membros[j].id_base == 0 ) {
+              pnGeracao = g0 + geracao+'a. Geração' +g2;
+            }
+            else
+            {
+              pnGeracao = g1 + geracao+'a. Geração' +g2;
+            }
             linha += '<td>' + pnGeracao + '</td>';
             linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
             linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
@@ -356,7 +370,6 @@ const getList = () => {
     }
   }
 
-
   const adicionaMae = async () => {
     nivel_atual = nivel_ - 1;
     let inputNomeMae = document.getElementById("newInputMae").value;
@@ -387,6 +400,9 @@ const getList = () => {
     let inputNomeFilho = document.getElementById("newInputFilho").value;
     if(inputNomeFilho != '' && inputNomeFilho != null)
     {
+      console.log('passei 1')
+      console.log(pai_)
+      console.log(mae_)
       if(pai_ == 0 && mae_ == 0)
       {
           // buscar o checked
@@ -410,12 +426,33 @@ const getList = () => {
             showToastrErro('Necessário informar se é Pai ou Mãe');
           }
       }
+      else
+      {
+          await  postItemComum( 'http://127.0.0.1:5000/add_membro_comum_filho',id_origem, inputNomeFilho, nivel_atual, pai_, mae_ );
+      }
+      document.getElementById("rbpai").checked = false;
+      document.getElementById("rbmae").checked = false;
     }
     else
     {
+      document.getElementById("rbpai").checked = false;
+      document.getElementById("rbmae").checked = false;      
       showToastrErro('Necessário informar o nome do Filho');
     }
   }
+
+  const alteraFilho = async () => {
+    let inputNomeFilho= document.getElementById("newInputFilho").value;
+    if(inputNomeFilho != '' && inputNomeFilho != null)
+    {
+      await  putItemComumFilho('http://127.0.0.1:5000/altera_membro_comum_filho', id_origem, inputNomeFilho);
+    }
+    else
+    {
+      showToastrErro('Necessário informar o nome do flho');
+    }
+  }
+
 
   function obterRadioMarcado() {
     var radioPai = document.getElementById('rbpai');
