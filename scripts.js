@@ -452,9 +452,6 @@ const getList = () => {
     let inputNomeFilho = document.getElementById("newInputFilho").value;
     if(inputNomeFilho != '' && inputNomeFilho != null)
     {
-      console.log('passei 1')
-      console.log(pai_)
-      console.log(mae_)
       if(pai_ == 0 && mae_ == 0)
       {
           // buscar o checked
@@ -489,6 +486,7 @@ const getList = () => {
     {
       document.getElementById("rbpai").checked = false;
       document.getElementById("rbmae").checked = false;      
+      showToastrErro('Necessário informar o nome do membro');
     }
   }
 
