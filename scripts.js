@@ -56,7 +56,7 @@ const getList = () => {
     $('#div-membro-comum').show();
     $('#idform').hide();
 
-    let url =  'http://127.0.0.1:5000/membro_comun?id_base=' + item;
+    let url =  'http://127.0.0.1:5000/membro_comum?id_base=' + item;
     fetch(url, {
       method: 'get'
     })
