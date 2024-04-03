@@ -116,7 +116,7 @@
           </div>
         </div>
 
-        <!-- Modal para filho -->
+        <!-- Modal para filho inclusão -->
         <div class="modal fade" id="ModalFilho" tabindex="-1" role="dialog" aria-labelledby="filhoModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -159,7 +159,29 @@
             </div>
           </div>
         </div>
-        
+
+
+        <!-- Modal para filho alteraçao -->
+        <div class="modal fade" id="ModalFilhoAlt" tabindex="-1" role="dialog" aria-labelledby="filhoModalLabelAlt" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" >Altera Nome do Membro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <input class="form-control largura-input" autocomplete="off"  id="newInputFilhoAlt" placeholder="Digite o nome do filho">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="cancelar()">Cancelar</button>
+                <button type="button" id="btnaltfilho" onclick="alteraFilho()" class="btn btn-primary mb-2" >Alterar</button> 
+              </div>
+            </div>
+          </div>
+        </div>
+
     </div>
 
 

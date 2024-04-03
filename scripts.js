@@ -71,6 +71,26 @@ const getList = () => {
       });
   }
 
+  const getFilhoPorId = async (id) => {
+    let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
+    fetch(url, {
+      method: 'get'
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if(data.membro)
+      {
+         document.getElementById("newInputFilhoAlt").value = data.membro[0].nome;
+      }
+      else
+      {
+        showToastrErro("Mebro não localizado!")
+      }
+   })
+ }
+
+
+
   const getPaiPorId = async (id) => {
     id_ = id;
     let url =  'http://127.0.0.1:5000/membro_por_id?id=' + id;
@@ -228,8 +248,12 @@ const getList = () => {
     let btkid01   = '<button type="button" class="btn btn-secondary btn-sm largura-100" data-toggle="modal" data-target="#ModalFilho"'
     let btfecha = '</button>';
 
-    let bt1 = '<button type="button" class="btn btn-secondary btn-sm"><span class="bi bi-vector-pen"></span></button>';
-    let bt2 = '<button type="button" class="btn btn-danger btn-sm"><span class="bi bi-trash-fill"></span></button>';
+    let btalt01 = '<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#ModalFilhoAlt"'
+    let btalt02 = '><span class="bi bi-vector-pen"></span>'
+
+    let btexc01 = '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#ModalFilho"'
+    let btexc02 = '><span class="bi bi-trash-fill"></span>'
+    
   
 
     if(data.membros != null)
@@ -248,6 +272,7 @@ const getList = () => {
               linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
               linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
               linha += '<td>' + btkid01 + 'id="id_kid_' + data.membros[j].id  + '" onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ',' + data.membros[j].mae + ')">' + data.membros[j].nome     + btfecha + '</td>';
+
               linha += '<td></td>'
               linha += '<td></td>'
             }
@@ -258,9 +283,9 @@ const getList = () => {
               linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
               linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
               linha += '<td>' + btkid01 + 'id="id_kid_' + data.membros[j].id  + '" onclick="add_kid(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ',' + data.membros[j].mae + ')">' + data.membros[j].nome     + btfecha + '</td>';
-              linha += '<td class="text-center">'+ bt1 + '</td>';
-              linha += '<td class="text-center">'+ bt2 + '</td>';
-      
+
+              linha += '<td>' + btalt01 + 'onclick="alt_kid(' + data.membros[j].id +')"' + btalt02 + btfecha + '</td>';
+              linha += '<td>' + btexc01 + 'onclick="exc_kid(' + data.membros[j].id +')"' + btexc02 + btfecha + '</td>';
             }
             linha += '</tr>'
             $('#table-geracao').append(linha);              
@@ -270,6 +295,8 @@ const getList = () => {
       }
     }
   }
+
+
 
   
   const newItem = async () => {
@@ -324,6 +351,16 @@ const getList = () => {
   }
 
 
+  const alt_kid = async (id) => {
+    id_origem =  id;
+    getFilhoPorId(id);
+  }
+
+  const exc_kid = async (id) => {
+    alert(id);
+  }
+
+
   const add_pai = async (id, nivel, pai) => {
     id_origem =  id;
     nivel_ = nivel;
@@ -351,6 +388,7 @@ const getList = () => {
     $("#ModalPai").modal("hide");
     $("#ModalMae").modal("hide");
     $("#ModalFilho").modal("hide");
+    $("#ModalFilhoAlt").modal("hide");
     await getListMembroComum(id_base_);
   }
 
@@ -451,19 +489,18 @@ const getList = () => {
     {
       document.getElementById("rbpai").checked = false;
       document.getElementById("rbmae").checked = false;      
-      showToastrErro('Necessário informar o nome do Filho');
     }
   }
 
   const alteraFilho = async () => {
-    let inputNomeFilho= document.getElementById("newInputFilho").value;
-    if(inputNomeFilho != '' && inputNomeFilho != null)
+    let inputNomeFilhoAlt = document.getElementById("newInputFilhoAlt").value;
+    if(inputNomeFilhoAlt != '' && inputNomeFilhoAlt != null)
     {
-      await  putItemComumFilho('http://127.0.0.1:5000/altera_membro_comum_filho', id_origem, inputNomeFilho);
+      await  putItemComumFilho('http://127.0.0.1:5000/altera_membro_comum_filho', id_origem, inputNomeFilhoAlt);
     }
     else
     {
-      showToastrErro('Necessário informar o nome do flho');
+      showToastrErro('Necessário informar o nome do membro');
     }
   }
 
@@ -546,6 +583,27 @@ const getList = () => {
       console.error('Error:', error);
     })
    }
+
+   const putItemComumFilho = async (url, id_origem, inputNome) => {
+    const formData = new FormData();
+    formData.append('id_filho', id_origem);
+    formData.append('nome', inputNome);
+
+    await  fetch(url, {
+      method: 'put',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      showToastrOk("Membro alterado com sucesso");
+      cancelar();      
+    })
+    .catch((error) => {
+      showToastrErro("Erro ao alterar membro");
+      console.error('Error:', error);
+    })
+   }
+
   
   const deleteItem = async (item) => {
     let url = await 'http://127.0.0.1:5000/produto?nome=' + item;
