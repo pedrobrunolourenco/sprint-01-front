@@ -12,7 +12,7 @@ function showToastrOk(msg) {
   toastr.options = {
     "closeButton": true,
     "progressBar": true,
-    "positionClass": "toast-top-right",
+    "positionClass": "toast-top-left",
     "timeOut": "5000"
   };
 
@@ -251,7 +251,7 @@ const getList = () => {
     let btalt01 = '<button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#ModalFilhoAlt"'
     let btalt02 = '><span class="bi bi-vector-pen"></span>'
 
-    let btexc01 = '<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#ModalFilho"'
+    let btexc01 = '<button type="button" class="btn btn-danger btn-sm"'
     let btexc02 = '><span class="bi bi-trash-fill"></span>'
     
   
@@ -267,7 +267,7 @@ const getList = () => {
            for (j = i; j < data.membros.length && data.membros[j].nivel == nivel; j++) {
             linha =  '<tr>';
             if( data.membros[j].id_base == 0 ) {
-              pnGeracao = g0 + geracao+'a. Geração' +g2;
+              pnGeracao = g0 + geracao + 'a. Geração' +g2;
               linha += '<td>' + pnGeracao + '</td>';
               linha += '<td>' + btpai01 + 'id="id_pai_' + data.membros[j].id  + '" onclick="add_pai(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].pai + ')">' + data.membros[j].nome_pai + btfecha + '</td>';
               linha += '<td>' + btmae01 + 'id="id_mae_' + data.membros[j].id  + '" onclick="add_mae(' + data.membros[j].id + ',' + data.membros[j].nivel + ',' + data.membros[j].mae + ')">' + data.membros[j].nome_mae + btfecha + '</td>';
@@ -357,7 +357,7 @@ const getList = () => {
   }
 
   const exc_kid = async (id) => {
-    alert(id);
+    showConfirmationDelete(id);
   }
 
 
@@ -615,5 +615,25 @@ const getList = () => {
   }
 
   
+  function showConfirmationDelete(id) {
+    Swal.fire({
+        title: 'Você tem certeza?',
+        text: "Este membro será excluído",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        closeOnConfirm: false,
+        closeOnCancel: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+          showToastrOk("Registro excluído com sucesso")
 
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // showToastrOk("cancelei")
+
+        }
+    });
+}
 
