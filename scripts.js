@@ -310,6 +310,7 @@ const getList = () => {
   const retornarMembrosBase = async () => {
     $('#titulo-arvore').val("Membros Base - Árvore Genealógica");
     $('#newInput').val('');
+    getList();
     $('#div-membro-comum').hide();
     $('#div-membro-base').show();
   }
@@ -345,7 +346,7 @@ const getList = () => {
         employee_data += '<tr>';
         employee_data += '<td>'+nome+'</td>';
         employee_data += '<td id="id="btarvore_' + id + '" name="' + id + '" onclick=getListMembroComum(' + id  +') class="text-center">'+bt1+'</td>';
-        employee_data += '<td id="id="btremove_' + id + '" name="' + id + '" class="text-center">'+bt2+'</td>';
+        employee_data += '<td id="id="btremove_' + id + '" name="' + id + '" onclick=showConfirmationDeleteMembroBase(' + id  +') class="text-center">'+bt2+'</td>';
         employee_data += '</tr>';
     $('#table-base').append(employee_data); 
   }
@@ -603,19 +604,52 @@ const getList = () => {
    }
 
   
-  const deleteItem = async (item) => {
-    let url = await 'http://127.0.0.1:5000/produto?nome=' + item;
-    fetch(url, {
-      method: 'delete'
-    })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  }
 
-  
-  function showConfirmationDelete(id) {
+   const deleteMembroComum = async (id) => {
+
+    const formData = new FormData();
+    formData.append('id', id);
+
+    url = 'http://127.0.0.1:5000/delete_membro_comum'
+
+    await  fetch(url, {
+      method: 'delete',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      showToastrOk("Membro deletado com sucesso");
+      cancelar();      
+    })
+    .catch((error) => {
+      showToastrErro("Erro ao deletar membro");
+      console.error('Error:', error);
+    })
+   }
+
+   const deleteMembroBase = async (id) => {
+    const formData = new FormData();
+    formData.append('id', id);
+
+    url = 'http://127.0.0.1:5000/delete_membro_base'
+
+    await  fetch(url, {
+      method: 'delete',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      showToastrOk("Árvore deletada com sucesso");
+      retornarMembrosBase();      
+    })
+    .catch((error) => {
+      showToastrErro("Erro ao deletar árvore");
+      console.error('Error:', error);
+    })
+   }
+
+   
+  function  showConfirmationDelete(id) {
     Swal.fire({
         title: 'Você tem certeza?',
         text: "Este membro será excluído",
@@ -628,12 +662,29 @@ const getList = () => {
         closeOnCancel: false
     }).then((result) => {
         if (result.isConfirmed) {
-          showToastrOk("Registro excluído com sucesso")
-
+          deleteMembroComum(id);
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          // showToastrOk("cancelei")
 
         }
     });
 }
 
+function  showConfirmationDeleteMembroBase(id) {
+  Swal.fire({
+      title: 'Você tem certeza?',
+      text: "Este processo irá excluir a árvore como um todo",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonClass: 'btn-danger',
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não',
+      closeOnConfirm: false,
+      closeOnCancel: false
+  }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMembroBase(id);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+
+      }
+  });
+}
